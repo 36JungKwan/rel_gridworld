@@ -68,10 +68,10 @@ def solve_gridworld(gamma):
 V_star, Pi_star = solve_gridworld(gamma)
 
 # ================= CHIA TABS GIAO DIỆN =================
-tab1, tab2 = st.tabs(["🔬 Bản Đồ AI (Toán Học)", "🎮 Chơi Trực Tiếp (Human Mode)"])
+tab1, tab2 = st.tabs(["🎮 Chơi Trực Tiếp (Human Mode)", "🔬 Bản Đồ AI (Toán Học)"])
 
 # --- TAB 1: BẢN ĐỒ AI ---
-with tab1:
+with tab2:
     col1, col2 = st.columns(2)
     with col1:
         st.subheader(r"1. Bảng Giá Trị $V^*$")
@@ -83,7 +83,7 @@ with tab1:
         st.dataframe(df_pi, use_container_width=True, height=220)
 
 # --- TAB 2: CHẾ ĐỘ NGƯỜI CHƠI ---
-with tab2:
+with tab1:
     st.subheader("Bàn Điều Khiển Agent 🤖")
     
     # Khởi tạo Session State cho các thông số trò chơi nếu chưa tồn tại
