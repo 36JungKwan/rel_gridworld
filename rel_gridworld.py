@@ -68,7 +68,7 @@ def solve_gridworld(gamma):
 V_star, Pi_star = solve_gridworld(gamma)
 
 # ================= CHIA TABS GIAO DIỆN =================
-tab1, tab2 = st.tabs(["🎮 Chơi Trực Tiếp (Human Mode)", "🔬 Bản Đồ AI (Toán Học)"])
+tab1, tab2 = st.tabs([ "🎮 Chơi Trực Tiếp (Human Mode)", "🔬 Bản Đồ AI (Toán Học)"])
 
 # --- TAB 1: BẢN ĐỒ AI ---
 with tab2:
@@ -86,14 +86,14 @@ with tab2:
 with tab1:
     st.subheader("Bàn Điều Khiển Agent 🤖")
     
-    # Khởi tạo Session State cho các thông số trò chơi nếu chưa tồn tại
+    # Khởi tạo Session State
     if 'gw_r' not in st.session_state: st.session_state.gw_r = 4
     if 'gw_c' not in st.session_state: st.session_state.gw_c = 0
     if 'score' not in st.session_state: st.session_state.score = 0
     if 'steps' not in st.session_state: st.session_state.steps = 0
     if 'gw_logs' not in st.session_state: st.session_state.gw_logs = ["Trò chơi bắt đầu! Hãy dùng bảng điều khiển bên dưới."]
 
-    # === KHU VỰC THIẾT LẬP VỊ TRÍ BAN ĐẦU (LUÔN HIỂN THỊ CÔNG KHAI) ===
+    # === THIẾT LẬP VỊ TRÍ BAN ĐẦU ===
     st.markdown("### 📍 Thay đổi / Thiết lập vị trí xuất phát")
     col_sel1, col_sel2, col_sel3 = st.columns([1, 1, 1.5])
     with col_sel1:
@@ -101,7 +101,7 @@ with tab1:
     with col_sel2:
         start_c = col_sel2.selectbox("Chọn Cột (0-4):", range(5), index=int(st.session_state.gw_c), key="select_col")
     with col_sel3:
-        st.write("") # Tạo khoảng trống đồng đều với nhãn chọn
+        st.write("") 
         st.write("")
         if st.button("🚀 Đặt Agent vào vị trí này & Reset điểm", use_container_width=True, type="secondary"):
             st.session_state.gw_r = start_r
@@ -113,7 +113,7 @@ with tab1:
 
     st.markdown("---")
 
-    # HÀM XỬ LÝ DI CHUYỂN
+    # === HÀM XỬ LÝ DI CHUYỂN ===
     def move(action_name, dr, dc):
         r, c = st.session_state.gw_r, st.session_state.gw_c
         ai_move = Pi_star[r, c]
@@ -125,7 +125,6 @@ with tab1:
         else:
             msg_ai = f"🤖 AI: Nước đi LỖI! Thuật toán khuyên phải đi {ai_move}."
 
-        # Logic di chuyển Gridworld
         if r == 0 and c == 1:
             st.session_state.gw_r, st.session_state.gw_c = 4, 1
             st.session_state.score += 10
@@ -146,7 +145,7 @@ with tab1:
         st.session_state.steps += 1
         st.session_state.gw_logs.insert(0, log)
 
-    # GIAO DIỆN CHƠI TRÒ CHƠI
+    # === GIAO DIỆN GAME ===
     col_game, col_ctrl = st.columns([1.5, 1])
 
     with col_game:
@@ -154,40 +153,93 @@ with tab1:
         sub_c1.metric("🏆 Điểm của bạn", st.session_state.score)
         sub_c2.metric("⏱️ Số bước đã đi", st.session_state.steps)
         
-        # Tạo lưới hiển thị bằng Emoji
-        grid_visual = np.full((5, 5), '⬜')
-        grid_visual[0, 1] = '🅰️'
-        grid_visual[0, 3] = '🅱️'
-        grid_visual[4, 1] = '🎯' # Vị trí dịch chuyển từ A
-        grid_visual[2, 3] = '🎯' # Vị trí dịch chuyển từ B
-        grid_visual[st.session_state.gw_r, st.session_state.gw_c] = '🤖' # Robot người chơi
+        # ---------------------------------------------------------
+        # UPDATE UI: VẼ BÀN CỜ BẰNG HTML/CSS GRID THAY VÌ DATAFRAME
+        # ---------------------------------------------------------
+        html_grid = """
+        <div style="
+            display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 6px; 
+            background-color: #2b3035; 
+            padding: 10px; 
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 500px;
+            margin: auto;
+        ">
+        """
         
-        df_grid = pd.DataFrame(grid_visual)
-        st.dataframe(df_grid.style.set_properties(**{'text-align': 'center', 'font-size': '24px'}), height=250, use_container_width=True)
+        for r in range(5):
+            for c in range(5):
+                # Setup mặc định cho ô trống
+                content = ""
+                bg_color = "#f8f9fa" # Màu nền sáng
+                border_color = "#dee2e6"
+                
+                # Cấu hình màu và icon cho các ô đặc biệt
+                if r == 0 and c == 1:
+                    content, bg_color = "🅰️", "#cce5ff" # Màu xanh biển nhạt
+                elif r == 0 and c == 3:
+                    content, bg_color = "🅱️", "#fff3cd" # Màu vàng nhạt
+                elif r == 4 and c == 1:
+                    content, bg_color = "🎯", "#f8d7da" # Màu đỏ nhạt (A')
+                elif r == 2 and c == 3:
+                    content, bg_color = "🎯", "#f8d7da" # Màu đỏ nhạt (B')
+                    
+                # Vẽ đè Robot lên nếu robot đang đứng ở ô này
+                if r == st.session_state.gw_r and c == st.session_state.gw_c:
+                    if content != "":
+                        # Nếu ô đã có mục tiêu, cho robot đứng cạnh mục tiêu
+                        content = f"🤖"
+                        bg_color = "#d1e7dd" # Xanh lá báo hiệu vị trí hiện tại
+                    else:
+                        content = "🤖"
+                        bg_color = "#d1e7dd"
+                        
+                # Khối CSS cho từng ô vuông
+                cell_html = f"""
+                <div style="
+                    background-color: {bg_color}; 
+                    border: 2px solid {border_color};
+                    border-radius: 8px; 
+                    aspect-ratio: 1 / 1; 
+                    display: flex; 
+                    align-items: center; 
+                    justify-content: center; 
+                    font-size: 2.2rem;
+                    transition: all 0.2s ease-in-out;
+                ">
+                    {content}
+                </div>
+                """
+                html_grid += cell_html
+                
+        html_grid += "</div><br>"
+        
+        # Render HTML/CSS trực tiếp lên màn hình
+        st.markdown(html_grid, unsafe_allow_html=True)
+        # ---------------------------------------------------------
 
     with col_ctrl:
         st.write("**🕹️ Bảng Điều Khiển**")
         
-        # Bố trí nút điều hướng dạng D-pad
         btn_col1, btn_col2, btn_col3 = st.columns(3)
         with btn_col2: 
             if st.button("⬆️", use_container_width=True): 
-                move('⬆️ Lên', -1, 0)
-                st.rerun()
+                move('⬆️ Lên', -1, 0); st.rerun()
         
         btn_col4, btn_col5, btn_col6 = st.columns(3)
         with btn_col4:
             if st.button("⬅️", use_container_width=True): 
-                move('⬅️ Trái', 0, -1)
-                st.rerun()
+                move('⬅️ Trái', 0, -1); st.rerun()
         with btn_col5:
             if st.button("⬇️", use_container_width=True): 
-                move('⬇️ Xuống', 1, 0)
-                st.rerun()
+                move('⬇️ Xuống', 1, 0); st.rerun()
         with btn_col6:
             if st.button("➡️", use_container_width=True): 
-                move('➡️ Phải', 0, 1)
-                st.rerun()
+                move('➡️ Phải', 0, 1); st.rerun()
 
     # BẢNG NHẬT KÝ BÌNH LUẬN
     st.markdown("### 📜 Bình Luận Của AI:")
