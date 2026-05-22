@@ -156,69 +156,36 @@ with tab1:
         # ---------------------------------------------------------
         # UPDATE UI: VẼ BÀN CỜ BẰNG HTML/CSS GRID THAY VÌ DATAFRAME
         # ---------------------------------------------------------
-        html_grid = """
-        <div style="
-            display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            gap: 6px; 
-            background-color: #2b3035; 
-            padding: 10px; 
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-            width: 100%;
-            max-width: 500px;
-            margin: auto;
-        ">
-        """
+        html_grid = "<div style='display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; background-color: #2b3035; padding: 10px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); width: 100%; max-width: 450px; margin: auto;'>"
         
         for r in range(5):
             for c in range(5):
-                # Setup mặc định cho ô trống
                 content = ""
-                bg_color = "#f8f9fa" # Màu nền sáng
+                bg_color = "#f8f9fa" 
                 border_color = "#dee2e6"
                 
                 # Cấu hình màu và icon cho các ô đặc biệt
                 if r == 0 and c == 1:
-                    content, bg_color = "🅰️", "#cce5ff" # Màu xanh biển nhạt
+                    content, bg_color = "🅰️", "#cce5ff" 
                 elif r == 0 and c == 3:
-                    content, bg_color = "🅱️", "#fff3cd" # Màu vàng nhạt
+                    content, bg_color = "🅱️", "#fff3cd" 
                 elif r == 4 and c == 1:
-                    content, bg_color = "🎯", "#f8d7da" # Màu đỏ nhạt (A')
+                    content, bg_color = "🎯", "#f8d7da" 
                 elif r == 2 and c == 3:
-                    content, bg_color = "🎯", "#f8d7da" # Màu đỏ nhạt (B')
+                    content, bg_color = "🎯", "#f8d7da" 
                     
                 # Vẽ đè Robot lên nếu robot đang đứng ở ô này
                 if r == st.session_state.gw_r and c == st.session_state.gw_c:
-                    if content != "":
-                        # Nếu ô đã có mục tiêu, cho robot đứng cạnh mục tiêu
-                        content = f"🤖"
-                        bg_color = "#d1e7dd" # Xanh lá báo hiệu vị trí hiện tại
-                    else:
-                        content = "🤖"
-                        bg_color = "#d1e7dd"
+                    content = "🤖"
+                    bg_color = "#d1e7dd"
                         
-                # Khối CSS cho từng ô vuông
-                cell_html = f"""
-                <div style="
-                    background-color: {bg_color}; 
-                    border: 2px solid {border_color};
-                    border-radius: 8px; 
-                    aspect-ratio: 1 / 1; 
-                    display: flex; 
-                    align-items: center; 
-                    justify-content: center; 
-                    font-size: 2.2rem;
-                    transition: all 0.2s ease-in-out;
-                ">
-                    {content}
-                </div>
-                """
+                # Code HTML cho từng ô không bị thụt lề
+                cell_html = f"<div style='background-color: {bg_color}; border: 2px solid {border_color}; border-radius: 8px; aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; font-size: 2.2rem;'>{content}</div>"
                 html_grid += cell_html
                 
         html_grid += "</div><br>"
         
-        # Render HTML/CSS trực tiếp lên màn hình
+        # Render trực tiếp lên màn hình
         st.markdown(html_grid, unsafe_allow_html=True)
         # ---------------------------------------------------------
 
