@@ -76,11 +76,11 @@ with tab2:
     with col1:
         st.subheader(r"1. Bảng Giá Trị $V^*$")
         df_v = pd.DataFrame(V_star, columns=[f"Cột {i}" for i in range(5)], index=[f"Hàng {i}" for i in range(5)])
-        st.dataframe(df_v.style.background_gradient(cmap="YlGn", axis=None).format("{:.1f}"), use_container_width=True, height=220)
+        st.dataframe(df_v.style.background_gradient(cmap="YlGn", axis=None).format("{:.1f}"), width='stretch', height=220)
     with col2:
         st.subheader(r"2. Chính Sách Tối Ưu $\pi_*$ (La Bàn)")
         df_pi = pd.DataFrame(Pi_star, columns=[f"Cột {i}" for i in range(5)], index=[f"Hàng {i}" for i in range(5)])
-        st.dataframe(df_pi, use_container_width=True, height=220)
+        st.dataframe(df_pi, width='stretch', height=220)
 
 # --- TAB 2: CHẾ ĐỘ NGƯỜI CHƠI ---
 with tab1:
@@ -103,7 +103,7 @@ with tab1:
     with col_sel3:
         st.write("") 
         st.write("")
-        if st.button("🚀 Đặt Agent vào vị trí này & Reset điểm", use_container_width=True, type="secondary"):
+        if st.button("🚀 Đặt Agent vào vị trí này & Reset điểm", width='stretch', type="secondary"):
             st.session_state.gw_r = start_r
             st.session_state.gw_c = start_c
             st.session_state.score = 0
@@ -227,18 +227,18 @@ with tab1:
         
         btn_col1, btn_col2, btn_col3 = st.columns(3)
         with btn_col2: 
-            if st.button("⬆️", use_container_width=True): 
+            if st.button("⬆️", width='stretch'): 
                 move('⬆️ Lên', -1, 0); st.rerun()
         
         btn_col4, btn_col5, btn_col6 = st.columns(3)
         with btn_col4:
-            if st.button("⬅️", use_container_width=True): 
+            if st.button("⬅️", width='stretch'): 
                 move('⬅️ Trái', 0, -1); st.rerun()
         with btn_col5:
-            if st.button("⬇️", use_container_width=True): 
+            if st.button("⬇️", width='stretch'): 
                 move('⬇️ Xuống', 1, 0); st.rerun()
         with btn_col6:
-            if st.button("➡️", use_container_width=True): 
+            if st.button("➡️", width='stretch'): 
                 move('➡️ Phải', 0, 1); st.rerun()
 
     # BẢNG NHẬT KÝ BÌNH LUẬN
